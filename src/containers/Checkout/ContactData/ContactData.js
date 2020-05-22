@@ -3,35 +3,79 @@ import Button from '../../../components/UI/Button/Button';
 import classes from './Contact.module.css';
 import axios from '../../../axios-orders';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import Input from '../../../components/UI/Input/Input';
 
 class contactData extends Component {
     state = {
-        name: 'name',
-        address: 'address',
-        postal: 'postal',
-        email: 'email',
+        orderForm: {
+            name: this.generateAttributes(
+                'input',
+                'text',
+                'Your Name',
+                ''
+            ),
+            street: this.generateAttributes(
+                'input',
+                'text',
+                'Street',
+                ''
+            ),
+            zipCode: this.generateAttributes(
+                'input',
+                'text',
+                'ZIP CODE',
+                ''
+            ),
+            country: this.generateAttributes(
+                'input',
+                'text',
+                'Country',
+                ''
+            ),
+            email: this.generateAttributes(
+                'input',
+                'email',
+                'Your E-Mail',
+                ''
+            ),
+            deliveryMethod: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {
+                            value: 'fastest',
+                            displayValue: 'Fastest',
+                        },
+                        {
+                            value: 'cheapest',
+                            displayValue: 'Cheapest',
+                        },
+                    ],
+                },
+                value: '',
+            },
+        },
         loading: false,
     };
 
+    generateAttributes(elementType, type, placeholder, value) {
+        return {
+            elementType: elementType,
+            elementConfig: {
+                type: type,
+                placeholder: placeholder,
+            },
+            value: value,
+        };
+    }
     submitHandler = (event) => {
         event.preventDefault();
         this.setState({ loading: true });
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.totalPrice,
-            customer: {
-                name: 'Max Schwarzmüller',
-                address: {
-                    street: 'Teststreet 1',
-                    zipCode: '41351',
-                    country: 'Germany',
-                },
-                email: 'test@test.com',
-            },
-            deliveryMethod: 'fastest',
         };
-        console.log('Contact Data');
-        console.log(this.props);
+
         axios
             .post('/orders.json', order)
             .then((response) => {
@@ -45,34 +89,35 @@ class contactData extends Component {
     render() {
         let form = (
             <form>
-                <input
-                    className={classes.Input}
-                    type="text"
-                    name="name"
-                    placeholder="Your Name"
+                <Input
+                    elementType="..."
+                    elementConfig="..."
+                    value="..."
                 />
-                <input
-                    className={classes.Input}
+                <Input
+                    inputtype="input"
                     type="email"
                     name="email"
                     placeholder="Your Email"
+                    //  label="Email: "
                 />
-                <input
-                    className={classes.Input}
+                <Input
+                    inputtype="input"
                     type="text"
                     name="address"
                     placeholder="Your Address"
+                    //  label="Address: "
                 />
-                <input
-                    className={classes.Input}
+                <Input
+                    inputtype="input"
                     type="text"
                     name="postal"
                     placeholder="Your ZIP"
+                    //  label="Zip :"
                 />
                 <Button
                     btnType="Success"
                     clicked={this.submitHandler}>
-                    {' '}
                     SUBMIT
                 </Button>
             </form>
