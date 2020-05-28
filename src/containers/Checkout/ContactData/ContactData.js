@@ -8,36 +8,55 @@ import Input from '../../../components/UI/Input/Input';
 class contactData extends Component {
     state = {
         orderForm: {
-            name: this.generateAttributes(
-                'input',
-                'text',
-                'Your Name',
-                ''
-            ),
-            street: this.generateAttributes(
-                'input',
-                'text',
-                'Street',
-                ''
-            ),
-            zipCode: this.generateAttributes(
-                'input',
-                'text',
-                'ZIP CODE',
-                ''
-            ),
-            country: this.generateAttributes(
-                'input',
-                'text',
-                'Country',
-                ''
-            ),
-            email: this.generateAttributes(
-                'input',
-                'email',
-                'Your E-Mail',
-                ''
-            ),
+            name: {
+                ...this.generateAttributes(
+                    'input',
+                    'text',
+                    'Your Name',
+                    ''
+                ),
+                validation: { required: true },
+            },
+            street: {
+                ...this.generateAttributes(
+                    'input',
+                    'text',
+                    'Street',
+                    ''
+                ),
+                validation: { required: true },
+            },
+            zipCode: {
+                ...this.generateAttributes(
+                    'input',
+                    'text',
+                    'ZIP CODE',
+                    ''
+                ),
+                validation: {
+                    required: true,
+                    minLength: 5,
+                    maxLength: 5,
+                },
+            },
+            country: {
+                ...this.generateAttributes(
+                    'input',
+                    'text',
+                    'Country',
+                    ''
+                ),
+                validation: { required: true },
+            },
+            email: {
+                ...this.generateAttributes(
+                    'input',
+                    'email',
+                    'Your E-Mail',
+                    ''
+                ),
+                validation: { required: true },
+            },
             deliveryMethod: {
                 elementType: 'select',
                 elementConfig: {
@@ -52,12 +71,32 @@ class contactData extends Component {
                         },
                     ],
                 },
-                value: '',
+                value: 'fastest',
+                valid: true,
+                validation: {},
             },
         },
         loading: false,
+        isFormValid: false,
     };
 
+    validateData(value, rules) {
+        let isValid = true;
+
+        if (rules.required)
+            isValid = value.trim() !== '' && isValid;
+
+        if (rules.minLength)
+            isValid =
+                value.trim().length >= rules.minLength &&
+                isValid;
+        if (rules.maxLength)
+            isValid =
+                value.trim().length <= rules.maxLength &&
+                isValid;
+
+        return isValid;
+    }
     generateAttributes(elementType, type, placeholder, value) {
         return {
             elementType: elementType,
@@ -66,14 +105,25 @@ class contactData extends Component {
                 placeholder: placeholder,
             },
             value: value,
+            valid: false,
+            touched: false,
         };
     }
     submitHandler = (event) => {
         event.preventDefault();
         this.setState({ loading: true });
+
+        const customerData = {};
+
+        for (let orderElement in this.state.orderForm)
+            customerData[orderElement] = this.state.orderForm[
+                orderElement
+            ].value;
+
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.totalPrice,
+            orderData: customerData,
         };
 
         axios
@@ -86,38 +136,67 @@ class contactData extends Component {
                 this.setState({ loading: false });
             });
     };
+
+    inputChangedHandler = (event, inputElementId) => {
+        const elementForm = { ...this.state.orderForm };
+        const elementFormConfig = {
+            ...elementForm[inputElementId],
+        };
+
+        elementFormConfig.value = event.target.value;
+
+        elementFormConfig.valid = this.validateData(
+            elementFormConfig.value,
+            elementFormConfig.validation
+        );
+
+        elementFormConfig.touched = true;
+
+        elementForm[inputElementId] = elementFormConfig;
+
+        let isFormValid = true;
+        for (let element in elementForm)
+            isFormValid =
+                elementForm[element].valid && isFormValid;
+
+        this.setState({
+            orderForm: elementForm,
+            isFormValid: isFormValid,
+        });
+    };
     render() {
+        let formElements = [];
+
+        for (let key in this.state.orderForm)
+            formElements.push({
+                id: key,
+                config: this.state.orderForm[key],
+            });
+
         let form = (
-            <form>
-                <Input
-                    elementType="..."
-                    elementConfig="..."
-                    value="..."
-                />
-                <Input
-                    inputtype="input"
-                    type="email"
-                    name="email"
-                    placeholder="Your Email"
-                    //  label="Email: "
-                />
-                <Input
-                    inputtype="input"
-                    type="text"
-                    name="address"
-                    placeholder="Your Address"
-                    //  label="Address: "
-                />
-                <Input
-                    inputtype="input"
-                    type="text"
-                    name="postal"
-                    placeholder="Your ZIP"
-                    //  label="Zip :"
-                />
+            <form onSubmit={this.submitHandler}>
+                {formElements.map((e) => (
+                    <Input
+                        key={e.id}
+                        elementType={e.config.elementType}
+                        elementConfig={e.config.elementConfig}
+                        value={e.config.value}
+                        invalid={!e.config.valid}
+                        requiresValidation={
+                            e.config.validation
+                        }
+                        touched={e.config.touched}
+                        changed={(event) =>
+                            this.inputChangedHandler(
+                                event,
+                                e.id
+                            )
+                        }
+                    />
+                ))}
                 <Button
                     btnType="Success"
-                    clicked={this.submitHandler}>
+                    disabled={!this.state.isFormValid}>
                     SUBMIT
                 </Button>
             </form>
