@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
 import { Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 class Checkout extends Component {
-    state = {
-        ingredients: null,
-    };
-
     // constructor(props) {
     //     super();
     //     const ingredients = new URLSearchParams(
@@ -21,22 +18,23 @@ class Checkout extends Component {
     //     this.state = { ingredients: newIngredients };
     //     console.log(this.state.ingredients);
     // }
-    UNSAFE_componentWillMount() {
-        const ingredients = new URLSearchParams(
-            this.props.location.search
-        );
 
-        const newIngredients = {};
-        let price = null;
-        for (let i of ingredients.entries())
-            if (i[0] === 'price') price = i[1];
-            else newIngredients[i[0]] = +i[1];
+    // UNSAFE_componentWillMount() {
+    //     const ingredients = new URLSearchParams(
+    //         this.props.location.search
+    //     );
 
-        this.setState({
-            ingredients: newIngredients,
-            price: price,
-        });
-    }
+    //     const newIngredients = {};
+    //     let price = null;
+    //     for (let i of ingredients.entries())
+    //         if (i[0] === 'price') price = i[1];
+    //         else newIngredients[i[0]] = +i[1];
+
+    //     this.setState({
+    //         ingredients: newIngredients,
+    //         price: price,
+    //     });
+    // }
 
     purchaseCancelHandler = () => {
         this.props.history.goBack();
@@ -50,7 +48,7 @@ class Checkout extends Component {
         return (
             <div>
                 <CheckoutSummary
-                    ingredients={this.state.ingredients}
+                    ingredients={this.props.ingredients}
                     cancelHandler={this.purchaseCancelHandler}
                     continueHandler={
                         this.purchaseContinueHandler
@@ -60,19 +58,17 @@ class Checkout extends Component {
                     path={
                         this.props.match.path + '/contact-data'
                     }
-                    render={(props) => (
-                        <ContactData
-                            ingredients={
-                                this.state.ingredients
-                            }
-                            totalPrice={this.state.price}
-                            {...props}
-                        />
-                    )}
+                    component={ContactData}
                 />
             </div>
         );
     }
 }
 
-export default Checkout;
+const mapStateToProps = (state) => {
+    return {
+        ingredients: state.ingredients,
+    };
+};
+
+export default connect(mapStateToProps)(Checkout);
