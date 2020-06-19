@@ -39,7 +39,7 @@ const reducer = (state = initialState, action) => {
             };
             break;
         case actions.SET_INGREDIENTS:
-            return {
+            res = {
                 ...state,
                 ingredients: {
                     salad: action.ingredients.salad,
@@ -47,17 +47,20 @@ const reducer = (state = initialState, action) => {
                     cheese: action.ingredients.cheese,
                     meat: action.ingredients.meat,
                 },
+                totalPrice: 4,
                 error: false,
             };
+            break;
         case actions.FETCH_INGREDIENTS_FAILED:
-            return {
+            res = {
                 ...state,
                 error: true,
             };
+            break;
         default:
-            return state;
+            res = state;
     }
-    console.log('[reducer]', res);
+    //console.log('[burgerBuilderReducer]', res);
     return res;
 };
 

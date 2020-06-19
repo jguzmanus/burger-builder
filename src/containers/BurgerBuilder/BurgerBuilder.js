@@ -10,7 +10,7 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import axios from '../../axios-orders';
 
 import { connect } from 'react-redux';
-import * as burgerBuilderActions from '../../store/actions/index';
+import * as actions from '../../store/actions/index';
 
 class BurgerBuilder extends Component {
     // constructor(props) {
@@ -66,6 +66,7 @@ class BurgerBuilder extends Component {
         //     search: '?' + ingredients.join('&'),
         // });
 
+        this.props.onPurchasedInit();
         this.props.history.push('/checkout');
     };
 
@@ -122,19 +123,20 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ingredients: state.ingredients,
-        price: state.totalPrice,
-        error: state.error,
+        ingredients: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onAddIngredient: (ingredientType) =>
-            dispatch(burgerBuilderActions.addIngredient(ingredientType)),
+            dispatch(actions.addIngredient(ingredientType)),
         onRemoveIngredient: (ingredientType) =>
-            dispatch(burgerBuilderActions.removeIngredient(ingredientType)),
-        onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients()),
+            dispatch(actions.removeIngredient(ingredientType)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onPurchasedInit: () => dispatch(actions.purchaseInit()),
     };
 };
 
