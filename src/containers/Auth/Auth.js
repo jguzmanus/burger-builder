@@ -17,6 +17,7 @@ class Auth extends Component {
                 validation: { required: true, minLength: 6 },
             },
         },
+        isSignup: true,
     };
 
     /******************************************************************/
@@ -80,13 +81,24 @@ class Auth extends Component {
     /******************************************************************/
 
     submitHandler = (event) => {
-        event.preventDefault();
+        event.preventDefault(); // prevent reloading of the page
         this.props.onAuth(
             this.state.controls.email.value,
-            this.state.controls.password.value
+            this.state.controls.password.value,
+            this.state.isSignup
         );
     };
+
     /******************************************************************/
+
+    switchSignupHandler = () => {
+        this.setState((prevState) => {
+            return { isSignup: !prevState.isSignup };
+        });
+    };
+
+    /******************************************************************/
+
     render() {
         let formElements = [];
 
@@ -114,13 +126,21 @@ class Auth extends Component {
             </form>
         );
 
-        return <div className={classes.Auth}>{form}</div>;
+        return (
+            <div className={classes.Auth}>
+                {form}{' '}
+                <Button clicked={this.switchSignupHandler} btnType="Danger">
+                    SWITCH TO {this.state.isSignup ? 'SIGNUP' : 'SIGNIN'}
+                </Button>
+            </div>
+        );
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onAuth: (email, password) => dispatch(actions.auth(email, password)),
+        onAuth: (email, password, isSignup) =>
+            dispatch(actions.auth(email, password, isSignup)),
     };
 };
 
