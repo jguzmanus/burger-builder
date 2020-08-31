@@ -131,8 +131,12 @@ class Auth extends Component {
             form = <Spinner />;
         }
 
+        let error = null;
+        if (this.props.error) error = <p>{this.props.error.message}</p>;
+
         return (
             <div className={classes.Auth}>
+                {error}
                 {form}
                 <Button clicked={this.switchSignupHandler} btnType="Danger">
                     SWITCH TO {this.state.isSignup ? 'SIGNIN' : 'SIGNUP'}
