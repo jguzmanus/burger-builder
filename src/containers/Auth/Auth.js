@@ -4,6 +4,7 @@ import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
 import * as actions from '../../store/actions/index';
 import { connect } from 'react-redux';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Auth extends Component {
     state = {
@@ -126,9 +127,13 @@ class Auth extends Component {
             </form>
         );
 
+        if (this.props.loading) {
+            form = <Spinner />;
+        }
+
         return (
             <div className={classes.Auth}>
-                {form}{' '}
+                {form}
                 <Button clicked={this.switchSignupHandler} btnType="Danger">
                     SWITCH TO {this.state.isSignup ? 'SIGNIN' : 'SIGNUP'}
                 </Button>
@@ -137,6 +142,13 @@ class Auth extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        loading: state.auth.loading,
+        error: state.auth.error,
+    };
+};
+
 const mapDispatchToProps = (dispatch) => {
     return {
         onAuth: (email, password, isSignup) =>
@@ -144,4 +156,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

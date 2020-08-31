@@ -10,7 +10,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     let res = state;
 
-    switch (action.actionType) {
+    switch (action.type) {
         case actions.AUTH_START:
             res = {
                 ...state,
@@ -18,7 +18,7 @@ const reducer = (state = initialState, action) => {
                 loading: true,
             };
             break;
-        case action.AUTH_SUCCESS:
+        case actions.AUTH_SUCCESS:
             res = {
                 ...state,
                 error: null,
@@ -27,7 +27,7 @@ const reducer = (state = initialState, action) => {
                 loading: false,
             };
             break;
-        case action.AUTH_FAIL:
+        case actions.AUTH_FAIL:
             res = {
                 ...state,
                 error: action.error,
