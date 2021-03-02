@@ -40,7 +40,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseHandler = () => {
-        if (this.props.isAuth) this.setState({ purchasing: true });
+        if (this.props.isAuthenticated) this.setState({ purchasing: true });
         else {
             this.props.onSetAuthRedirectPath('/checkout');
             this.props.history.push('/auth');
@@ -52,24 +52,6 @@ class BurgerBuilder extends Component {
     };
 
     purchaseContinueHandler = () => {
-        // alert('You continue!');
-
-        // const ingredients = [];
-        // for (let i in this.state.ingredients)
-        //     ingredients.push(
-        //         encodeURIComponent(i) +
-        //             '=' +
-        //             encodeURIComponent(
-        //                 this.state.ingredients[i]
-        //             )
-        //     );
-
-        // ingredients.push('price=' + this.state.totalPrice);
-        // this.props.history.push({
-        //     pathname: '/checkout',
-        //     search: '?' + ingredients.join('&'),
-        // });
-
         this.props.onPurchasedInit();
         this.props.history.push('/checkout');
     };
