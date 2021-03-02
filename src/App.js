@@ -7,8 +7,13 @@ import { Route, Switch } from 'react-router-dom';
 import Orders from './containers/Orders/Orders';
 import Auth from './containers/Auth/Auth';
 import Logout from './containers/Auth/Logout/Logout';
+import * as actions from './store/actions/index';
+import { connect } from 'react-redux';
 
 class App extends Component {
+    componentDidMount() {
+        this.props.onAuthCheckState();
+    }
     render() {
         return (
             <div>
@@ -25,5 +30,9 @@ class App extends Component {
         );
     }
 }
-
-export default App;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onAuthCheckState: () => dispatch(actions.authCheckState()),
+    };
+};
+export default connect(null, mapDispatchToProps)(App);

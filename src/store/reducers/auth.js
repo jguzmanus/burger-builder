@@ -2,7 +2,6 @@ import * as actions from '../actions/actionTypes';
 
 const initialState = {
     token: null,
-    userId: null,
     error: null,
     loading: false,
     authRedirectPath: '/',
@@ -24,7 +23,6 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 error: null,
                 token: action.idToken,
-                userId: action.userId,
                 loading: false,
             };
             break;
