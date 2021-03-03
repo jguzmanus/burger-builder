@@ -61,7 +61,7 @@ const reducer = (state = initialState, action) => {
         default:
             res = state;
     }
-    // console.log('[orderReducer]', res);
+
     return res;
 };
 

@@ -64,7 +64,7 @@ const reducer = (state = initialState, action) => {
         default:
             res = state;
     }
-    //console.log('[burgerBuilderReducer]', res);
+
     return res;
 };
 
